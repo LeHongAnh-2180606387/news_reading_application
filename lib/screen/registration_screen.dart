@@ -1,14 +1,4 @@
-import 'dart:developer';
-// ignore_for_file: unused_import
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/progress/progress_indicator.dart';
-import 'package:news_reading_application/screen/dashboard.dart';
-import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-
-import '../database/database_handler.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -90,7 +80,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         backgroundColor: const Color(0xff4c505b),
                         child: IconButton(
                           color: Colors.white,
-                          onPressed: () => registrationButton(),
+                          onPressed: () {
+                            // Handle button click here (Frontend action)
+                          },
                           icon: const Icon(Icons.arrow_forward),
                         ),
                       ),
@@ -179,7 +171,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       child: TextFormField(
         controller: passwordController,
         keyboardType: TextInputType.text,
-        obscureText: false,
+        obscureText: true,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Password is required.';
@@ -195,43 +187,5 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             labelText: 'Password'),
       ),
     );
-  }
-
-  void registrationButton() {
-    if (nameFieldKey.currentState!.validate() &&
-        emailFieldKey.currentState!.validate() &&
-        passwordFieldKey.currentState!.validate()) {
-      CustomProgressIndicator progressIndicator =
-          CustomProgressIndicator(context);
-
-      //Show progress bar
-      progressIndicator.showDialog(
-          "Please wait", SimpleFontelicoProgressDialogType.threelines);
-
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text)
-          .then((value) {
-        try {
-          progressIndicator.hideDialog();
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const Dashboard()));
-        } catch (e) {
-          print("Exception : $e");
-        }
-
-        //Store user name
-        DatabaseHandler().storeUserName(nameController.text);
-        //Redirect to login screen
-        //Hide progressbar
-
-        log("<--- Account registration : $value");
-      }).onError((error, stackTrace) {
-        //Hide progressbar
-        progressIndicator.hideDialog();
-
-        log("<--- Account registration : $error");
-      });
-    }
   }
 }

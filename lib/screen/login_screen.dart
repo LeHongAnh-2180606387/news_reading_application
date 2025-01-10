@@ -1,13 +1,4 @@
-// ignore_for_file: unused_import
-
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/data/constant_data.dart';
-import 'package:news_reading_application/progress/progress_indicator.dart';
-import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -17,23 +8,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //Text edit field key
-  final emailFieldKey = GlobalKey<FormState>();
-  final passwordFieldKey = GlobalKey<FormState>();
-
-  //Text editing controller
+  // Text editing controller
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    // if(FirebaseAuth.instance.currentUser?.uid != null){
-    //   Navigator.pushReplacementNamed(context, "dashboard");
-    // }nnn
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 40,
                 ),
 
-                //Login button
+                // Login button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -88,7 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor: const Color(0xff4c505b),
                       child: IconButton(
                         color: Colors.white,
-                        onPressed: () => loginButton(),
+                        onPressed: () {
+                          // Add local action if needed
+                        },
                         icon: const Icon(Icons.arrow_forward),
                       ),
                     ),
@@ -99,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 40,
                 ),
 
-                //SignUp button
+                // SignUp and Forgot Password buttons
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -116,7 +95,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Add local action if needed
+                        },
                         child: const Text(
                           'Forgot Password',
                           style: TextStyle(
@@ -136,84 +117,34 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget getEmailField() {
-    return Form(
-      key: emailFieldKey,
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: false,
-        controller: emailController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Email is required.';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-            fillColor: Colors.grey.shade100,
-            filled: true,
-            prefixIcon: Icon(Icons.email, color: Colors.black26),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            labelText: 'Email'),
-      ),
+    return TextFormField(
+      keyboardType: TextInputType.text,
+      obscureText: false,
+      controller: emailController,
+      decoration: InputDecoration(
+          fillColor: Colors.grey.shade100,
+          filled: true,
+          prefixIcon: const Icon(Icons.email, color: Colors.black26),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          labelText: 'Email'),
     );
   }
 
   Widget getPasswordField() {
-    return Form(
-      key: passwordFieldKey,
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        controller: passwordController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Password is required.';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-            fillColor: Colors.grey.shade100,
-            filled: true,
-            prefixIcon: const Icon(Icons.lock_open, color: Colors.black26),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            labelText: 'Password'),
-      ),
+    return TextFormField(
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      controller: passwordController,
+      decoration: InputDecoration(
+          fillColor: Colors.grey.shade100,
+          filled: true,
+          prefixIcon: const Icon(Icons.lock_open, color: Colors.black26),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          labelText: 'Password'),
     );
-  }
-
-  void loginButton() {
-    if (emailFieldKey.currentState!.validate() &&
-        passwordFieldKey.currentState!.validate()) {
-      CustomProgressIndicator progressIndicator =
-          CustomProgressIndicator(context);
-
-      //Show login progressbar
-      progressIndicator.showDialog(
-          "Login", SimpleFontelicoProgressDialogType.threelines);
-
-      //Login credential
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text)
-          .then((value) {
-        //Hide login progressbar
-        progressIndicator.hideDialog();
-        log("<--- Login : $value");
-
-        print(value.user?.uid.toString());
-
-        token = value.user?.uid.toString();
-
-        Navigator.pushReplacementNamed(context, "dashboard");
-      }).onError((error, stackTrace) {
-        //Hide login progressbar
-        progressIndicator.hideDialog();
-        log("<--- Login failed : $error");
-      });
-    }
   }
 }
