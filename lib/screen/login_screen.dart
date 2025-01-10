@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // if(FirebaseAuth.instance.currentUser?.uid != null){
     //   Navigator.pushReplacementNamed(context, "dashboard");
-    // }
+    // }nnn
   }
 
   @override
