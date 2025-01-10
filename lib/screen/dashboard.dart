@@ -295,7 +295,7 @@ class _DashboardState extends State<Dashboard> {
           GestureDetector(
             onTap: () {
               controller.newsCategory("sports");
-              setCategoryButtonIndicator("sports");
+              setCategoryButtonIndicator("sport");
             },
             child: Container(
               decoration: BoxDecoration(
