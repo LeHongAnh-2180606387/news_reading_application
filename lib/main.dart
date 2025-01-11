@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
+import 'package:news_reading_application/CODE/Screen/Dashboard.dart';
 import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
-import 'package:news_reading_application/CODE/Screen/LoginPage.dart';
+import 'package:news_reading_application/CODE/Screen/LoginPage_GitHub.dart';
 import 'package:news_reading_application/CODE/Screen/SearchScreen.dart';
 import 'firebase_options.dart';
 import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';

@@ -53,6 +53,7 @@ class _AuthScreenState extends State<AuthScreen> {
             ElevatedButton(
               onPressed: isRegister
                   ? () => registerWithEmailPassword(
+                        context,
                         _emailController.text,
                         _passwordController.text,
                         _usernameController.text,

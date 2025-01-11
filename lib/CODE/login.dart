@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
+import 'package:news_reading_application/CODE/Profile/ProfileScreen.dart';
+import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
+import 'package:news_reading_application/CODE/Screen/Dashboard.dart';
 import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
 
-Future<void> registerWithEmailPassword(String email, String password, String username) async {
+Future<void> registerWithEmailPassword(BuildContext context, String email, String password, String username) async {
   try {
     // Đăng ký tài khoản người dùng với email và mật khẩu
     UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -21,11 +24,18 @@ Future<void> registerWithEmailPassword(String email, String password, String use
     });
 
     print("Tạo tài khoản thành công!");
+
+    // Sau khi đăng ký thành công, điều hướng đến màn hình đăng nhập
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AuthScreen()),
+    );
   } catch (e) {
     print('Lỗi đăng ký: $e');
     throw Exception("Đăng ký thất bại: $e");  // Thông báo lỗi cho người dùng
   }
 }
+
 
 Future<User?> signInWithEmailPassword(BuildContext context, String email, String password) async {
   try {
@@ -46,7 +56,7 @@ Future<User?> signInWithEmailPassword(BuildContext context, String email, String
     // Chuyển đến HomeScreen sau khi đăng nhập thành công
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => ChatScreen()), // HomeScreen là màn hình bạn muốn chuyển tới
+      MaterialPageRoute(builder: (context) => Dashboard()), // HomeScreen là màn hình bạn muốn chuyển tới
     );
     saveUsername();
 
@@ -80,9 +90,8 @@ Future<void> signInAnonymously(BuildContext context) async {
       // Chuyển đến HomeScreen sau khi đăng nhập thành công
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChatScreen()),      
+        MaterialPageRoute(builder: (context) => Dashboard()),      
       );
-      saveUsername();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

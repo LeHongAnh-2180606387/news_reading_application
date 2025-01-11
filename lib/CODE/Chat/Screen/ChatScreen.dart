@@ -1,7 +1,9 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:news_reading_application/CODE/Chat/Message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:news_reading_application/CODE/GoogleSignInService.dart';
 import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -35,11 +37,11 @@ void _sendMessage() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
+         title: Column(
           children: [
             const Text('Chat Firestore'),
             Text(
-              'UID: ${FirebaseAuth.instance.currentUser!.uid}',
+              'UID: ${FirebaseAuth.instance.currentUser?.uid ?? 'Unknown'}',
               style: const TextStyle(fontSize: 12),
             )
           ],
@@ -48,13 +50,7 @@ void _sendMessage() async {
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => AuthScreen()),
-              );
-            },
+            onPressed: () => _signOut(context),
           ),
         ],
       ),
@@ -91,4 +87,15 @@ void _sendMessage() async {
       ),
     );
   }
+}
+
+// Thêm hàm đăng xuất cho cả FirebaseAuth và GoogleSignIn
+Future<void> _signOut(BuildContext context) async {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  await _googleSignIn.signOut(); // Đăng xuất khỏi Google
+  //await FirebaseAuth.instance.signOut(); // Đăng xuất khỏi Firebase
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
+  );
 }

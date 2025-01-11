@@ -3,6 +3,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
+import 'package:news_reading_application/CODE/Profile/ProfileScreen.dart';
+import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
+import 'package:news_reading_application/CODE/Screen/Dashboard.dart';
 import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
 
 class GoogleSignInService {
@@ -31,6 +34,7 @@ class GoogleSignInService {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      
       print("OAuthCredential đã được tạo");
 
       // Đăng nhập Firebase bằng credential
@@ -65,7 +69,7 @@ class GoogleSignInService {
         // Điều hướng đến trang HomeScreen sau khi đăng nhập thành công
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ChatScreen()),//HomeScreen()),
+          MaterialPageRoute(builder: (context) => Dashboard()),//HomeScreen()),
         );
       }
     } catch (e) {
@@ -75,4 +79,9 @@ class GoogleSignInService {
       );
     }
   }
+
+  signOut() {}
+
+  //_signOut(BuildContext context) {}
 }
+
