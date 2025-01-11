@@ -69,6 +69,10 @@ class _AuthScreenState extends State<AuthScreen> {
               onPressed: () => _googleSignInService.signInWithGoogle(context),  // Gọi service từ đây
               child: Text('Đăng nhập với Google'),
             ),
+            ElevatedButton(
+              onPressed: () => signInAnonymously(context),  // Gọi hàm từ login.dart
+              child: Text('Đăng nhập ẩn danh'),
+            ),
             TextButton(
               onPressed: _toggleAuthMode,
               child: Text(isRegister ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Đăng ký'),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
 import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
 import 'package:news_reading_application/CODE/Screen/LoginPage.dart';
 import 'package:news_reading_application/CODE/Screen/SearchScreen.dart';
@@ -28,4 +29,29 @@ class MainApp extends StatelessWidget {
       home: AuthScreen(), // Đặt AuthScreen làm màn hình chính
     );
   }
+  // return MaterialApp(
+  //     title: 'Flutter Chat',
+  //     theme: ThemeData(
+  //       primarySwatch: Colors.blue,
+  //     ),
+  //     home: StreamBuilder(
+  //       stream: FirebaseAuth.instance.authStateChanges(),
+  //       builder: (ctx, userSnapshot) {
+  //         if (userSnapshot.hasData) {
+  //           return const ChatScreen();
+  //         }
+  //         return Scaffold(
+  //           body: Center(
+  //             child: ElevatedButton(
+  //               child: const Text('Đăng nhập ẩn danh'),
+  //               onPressed: () async {
+  //                 await FirebaseAuth.instance.signInAnonymously();
+  //               },
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 }
