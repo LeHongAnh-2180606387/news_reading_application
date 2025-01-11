@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:newsapp/models/show_category.dart';
-import 'package:newsapp/models/slider_model.dart';
+import 'package:news_reading_application/models/show_category.dart';
+import 'package:news_reading_application/models/slider_model.dart';
 
 class ShowCategoryNews {
   List<ShowCategoryModel> categories = [];

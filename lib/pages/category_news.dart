@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:newsapp/models/show_category.dart';
-import 'package:newsapp/pages/article_view.dart';
-import 'package:newsapp/services/show_category_news.dart';
+import 'package:news_reading_application/models/show_category.dart';
+import 'package:news_reading_application/pages/article_view.dart';
+import 'package:news_reading_application/services/show_category_news.dart';
 
 class CategoryNews extends StatefulWidget {
   String name;

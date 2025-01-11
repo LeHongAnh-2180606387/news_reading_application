@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/pages/home.dart';
+import 'package:news_reading_application/pages/home.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});

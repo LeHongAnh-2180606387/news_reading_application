@@ -1,16 +1,18 @@
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, prefer_const_literals_to_create_immutables
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:newsapp/models/article_model.dart';
-import 'package:newsapp/models/category_model.dart';
-import 'package:newsapp/models/slider_model.dart';
-import 'package:newsapp/pages/all_news.dart';
-import 'package:newsapp/pages/article_view.dart';
-import 'package:newsapp/pages/category_news.dart';
+import 'package:news_reading_application/models/article_model.dart';
+import 'package:news_reading_application/models/category_model.dart';
+import 'package:news_reading_application/models/slider_model.dart';
+import 'package:news_reading_application/pages/all_news.dart';
+import 'package:news_reading_application/pages/article_view.dart';
+import 'package:news_reading_application/pages/category_news.dart';
 
-import 'package:newsapp/services/data.dart';
-import 'package:newsapp/services/news.dart';
-import 'package:newsapp/services/slider_data.dart';
+import 'package:news_reading_application/services/data.dart';
+import 'package:news_reading_application/services/news.dart';
+import 'package:news_reading_application/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {

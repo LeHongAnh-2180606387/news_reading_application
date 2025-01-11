@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/pages/home.dart';
-import 'package:newsapp/pages/landing_page.dart';
+import 'package:news_reading_application/pages/home.dart';
+import 'package:news_reading_application/pages/landing_page.dart';
 
 void main() {
   runApp(const MyApp());
