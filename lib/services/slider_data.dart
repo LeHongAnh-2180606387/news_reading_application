@@ -8,7 +8,7 @@ class Sliders {
 
   Future<void> getSlider() async {
     String url =
-        "https://newsapi.org/v2/everything?domains=wsj.com&apiKey=YOUR_APIKEY";
+        "https://newsapi.org/v2/everything?q=tesla&from=2024-12-10&sortBy=publishedAt&apiKey=bff42077feb94c4eaeafbc0891768e33";
     var response = await http.get(Uri.parse(url));
 
     var jsonData = jsonDecode(response.body);

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleView extends StatefulWidget {
-  String blogUrl;
+  final String blogUrl;
   ArticleView({required this.blogUrl});
 
   @override
@@ -12,29 +12,35 @@ class ArticleView extends StatefulWidget {
 }
 
 class _ArticleViewState extends State<ArticleView> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Khởi tạo WebViewController
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.blogUrl));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Flutter"),
-              Text(
-                "News",
-                style:
-                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-          centerTitle: true,
-          elevation: 0.0,
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Flutter"),
+            Text(
+              "News",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            )
+          ],
         ),
-        body: Container(
-          child: WebView(
-            initialUrl: widget.blogUrl,
-            javascriptMode: JavascriptMode.unrestricted,
-          ),
-        ));
+        centerTitle: true,
+        elevation: 0.0,
+      ),
+      body: WebViewWidget(controller: _controller),
+    );
   }
 }

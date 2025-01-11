@@ -7,9 +7,6 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
-  cached_network_image: ^3.4.1
-  carousel_slider: ^5.0.0
-  cupertino_icons: ^1.0.8
   firebase_auth: ^5.3.4
   firebase_core: ^3.10.0
   firebase_database: ^11.2.0
@@ -23,10 +20,9 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   url_launcher: ^6.3.1
   webview_flutter: ^4.10.0
-  webview_flutter_android: ^4.2.0
-  webview_flutter_platform_interface: ^2.10.0
-  webview_flutter_web: ^0.2.3+4
-  webview_flutter_wkwebview: ^3.17.0
+  cached_network_image: ^3.4.1
+  carousel_slider: ^5.0.0
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
