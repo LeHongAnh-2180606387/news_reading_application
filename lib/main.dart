@@ -1,19 +1,44 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/screen/login_screen.dart';
-import 'package:news_reading_application/screen/registration_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:news_reading_application/services/navigation_service.dart';
+import 'package:news_reading_application/services/notification_service.dart';
+import 'package:news_reading_application/theme/style.dart';
+import 'package:news_reading_application/views/all_articles.dart';
 
-Future<void> main() async {
+import 'locator.dart';
+
+void main() async {
+  setupLocator();
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  NotificationsService notificationService =
+      locator.get<NotificationsService>();
+  notificationService.initialize();
 
-  runApp(
-    MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: 'login',
-        routes: {
-          'login': (context) => const LoginScreen(),
-          'register': (context) => const RegistrationScreen(),
-        }),
-  );
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Best News',
+      theme: appLightTheme(),
+      debugShowCheckedModeBanner: false,
+      navigatorKey: locator<NavigationService>().navigatorKey,
+      home: GestureDetector(
+          onTap: () {
+            // Dismiss soft keyboard when tapping outside of input field
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            }
+          },
+          child: const AllArticlesPage()),
+    );
+  }
 }
