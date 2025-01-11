@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lottie/lottie.dart';  
+import 'package:lottie/lottie.dart';
+import 'package:news_reading_application/CODE/Service/Article_Service.dart';  
 import 'package:news_reading_application/Screen/AuthScreen.dart';
 import 'package:news_reading_application/CODE/Service/weather_service.dart';
+import 'package:news_reading_application/Screen/CreateArticleScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,12 +18,16 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   bool isLoggedIn = false; // Biến trạng thái đăng nhập
   GoogleSignInAccount? _user;
+  List<Map<String, dynamic>> articles = []; // Danh sách bài báo
+
+  final ArticleService _articleService = ArticleService(); // Khởi tạo ArticleService
 
   @override
   void initState() {
     super.initState();
     _loadWeather();
     _checkLoginStatus();
+    _loadArticles();
   }
 
   // Kiểm tra trạng thái đăng nhập
@@ -89,6 +95,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// Lấy bài báo từ Firestore
+  Future<void> _loadArticles() async {
+    List<Map<String, dynamic>> fetchedArticles = await _articleService.fetchArticles();
+    setState(() {
+      articles = fetchedArticles;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,25 +118,57 @@ class _HomeScreenState extends State<HomeScreen> {
               : IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () => _signOut(context),  // Nếu đã đăng nhập, hiện icon đăng xuất
-                )
-              ,
+                ),
         ],
       ),
-      body: Row(
+      body: Column(  // Thay Row thành Column để các phần tử nằm theo chiều dọc
         children: [
+        // Hiển thị biểu tượng thời tiết, nằm dưới AppBar và căn trái
           isLoading
               ? CircularProgressIndicator()  // Hiển thị loading khi đang tải
               : weatherAnimation.isNotEmpty
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 20.0, top: 50.0),  
-                      child: Lottie.asset(
-                        weatherAnimation,  // Hiển thị animation từ file JSON
-                        width: 50,
-                        height: 50,
+                      padding: const EdgeInsets.only(left: 20.0, top: 10.0),  // Thêm khoảng cách từ trên xuống
+                      child: Align(
+                        alignment: Alignment.centerLeft,  // Căn trái icon
+                        child: Lottie.asset(
+                          weatherAnimation,  // Hiển thị animation từ file JSON
+                          width: 50,
+                          height: 50,
+                        ),
                       ),
                     )
                   : Text('Không thể lấy dữ liệu thời tiết'),
+                  SizedBox(height: 20),  // Khoảng cách 20 đơn vị
+          // Danh sách bài báo
+          Expanded(
+            child: articles.isEmpty
+                ? Center(child: CircularProgressIndicator()) // Nếu chưa có bài báo
+                : ListView.builder(
+                    itemCount: articles.length,
+                    itemBuilder: (context, index) {
+                      String imageUrl = articles[index]['imageUrl'] ?? '';
+                      String title = articles[index]['title'] ?? 'Không có tiêu đề';
+                      return ListTile(
+                        leading: imageUrl.isNotEmpty
+                            ? Image.network(imageUrl, width: 50, height: 50, fit: BoxFit.cover)
+                            : Icon(Icons.image_not_supported),
+                        title: Text(title),
+                      );
+                    },
+                  ),
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateArticleScreen()), // Chuyển đến màn hình tạo bài báo
+          );
+        },
+        child: Icon(Icons.add),
+        tooltip: 'Tạo bài báo mới',
       ),
     );
   }
