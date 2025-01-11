@@ -1,14 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// ignore_for_file: prefer_const_literals_to_create_immutables
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/models/article_model.dart';
-import 'package:news_reading_application/models/category_model.dart';
-import 'package:news_reading_application/models/slider_model.dart';
-import 'package:news_reading_application/pages/all_news.dart';
-import 'package:news_reading_application/pages/article_view.dart';
-import 'package:news_reading_application/pages/category_news.dart';
+import 'package:news_reading_application/model/category_model.dart';
+import 'package:news_reading_application/model/slider_model.dart';
 import 'package:news_reading_application/services/data.dart';
-import 'package:news_reading_application/services/news.dart';
 import 'package:news_reading_application/services/slider_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -21,44 +16,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
-  List<sliderModel> sliders = [];
-  List<ArticleModel> articles = [];
-  bool _loading = true, loading2 = true;
-
+  List<SliderModel> sliders = [];
   int activeIndex = 0;
-
   @override
   void initState() {
-    super.initState();
     categories = getCategories();
-    getSlider();
-    getNews();
-  }
-
-  Future<void> getNews() async {
-    News newsclass = News();
-    await newsclass.getNews();
-    if (newsclass.news.isNotEmpty) {
-      articles = newsclass.news;
-    } else {
-      print("No articles available");
-    }
-    setState(() {
-      _loading = false;
-    });
-  }
-
-  Future<void> getSlider() async {
-    Sliders slider = Sliders();
-    await slider.getSlider();
-    if (slider.sliders.isNotEmpty) {
-      sliders = slider.sliders;
-    } else {
-      print("No sliders available");
-    }
-    setState(() {
-      loading2 = false;
-    });
+    sliders = getSliders();
+    super.initState();
   }
 
   @override
@@ -73,352 +37,247 @@ class _HomeState extends State<Home> {
               "Reading",
               style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
             ),
-            Text(
-              "Application",
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-            )
           ],
         ),
         centerTitle: true,
         elevation: 0.0,
       ),
-      body: _loading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10.0),
+                height: 70,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      return CategoryTile(
+                        image: categories[index].image,
+                        categoryName: categories[index].categoryName,
+                      );
+                    }),
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Categories Section
-                    Container(
-                      margin: EdgeInsets.only(left: 10.0),
-                      height: 70,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          return CategoryTile(
-                            image:
-                                categories[index].image ?? '', // Kiểm tra null
-                            categoryName: categories[index].categoryName ??
-                                'No category', // Kiểm tra null
-                          );
-                        },
-                      ),
+                    Text(
+                      "Tin Nóng!!",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                          fontFamily: 'Pacifico'),
                     ),
-                    SizedBox(height: 30.0),
-
-                    // Breaking News Section
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Breaking News!",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AllNews(news: "Breaking")));
-                            },
-                            child: Text(
-                              "View All",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Colors.blue,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0),
-                            ),
-                          ),
-                        ],
-                      ),
+                    Text(
+                      "Xem thêm",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0),
                     ),
-                    SizedBox(height: 20.0),
-
-                    // Carousel Slider Section
-                    loading2
-                        ? Center(child: CircularProgressIndicator())
-                        : sliders.isNotEmpty
-                            ? CarouselSlider.builder(
-                                itemCount: sliders.length,
-                                itemBuilder: (context, index, realIndex) {
-                                  String res = sliders[index].urlToImage ??
-                                      ''; // Kiểm tra null
-                                  String res1 = sliders[index].title ??
-                                      'No title'; // Kiểm tra null
-                                  return buildImage(res, index, res1);
-                                },
-                                options: CarouselOptions(
-                                  height: 250,
-                                  autoPlay: true,
-                                  enlargeCenterPage: true,
-                                  enlargeStrategy:
-                                      CenterPageEnlargeStrategy.height,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      activeIndex = index;
-                                    });
-                                  },
-                                ),
-                              )
-                            : Center(child: Text("No sliders available")),
-
-                    SizedBox(height: 30.0),
-                    Center(child: buildIndicator()),
-                    SizedBox(height: 30.0),
-
-                    // Trending News Section
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Trending News!",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AllNews(news: "Trending")));
-                            },
-                            child: Text(
-                              "View All",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Colors.blue,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-
-                    // Articles Section
-                    articles.isNotEmpty
-                        ? Container(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              itemCount: articles.length,
-                              itemBuilder: (context, index) {
-                                return BlogTile(
-                                  url: articles[index].url ??
-                                      '', // Kiểm tra null
-                                  desc: articles[index].description ??
-                                      'No description', // Kiểm tra null
-                                  imageUrl: articles[index].urlToImage ??
-                                      '', // Kiểm tra null
-                                  title: articles[index].title ??
-                                      'No title', // Kiểm tra null
-                                );
-                              },
-                            ),
-                          )
-                        : Center(child: Text("No articles available")),
                   ],
                 ),
               ),
-            ),
+              SizedBox(
+                height: 20.0,
+              ),
+              CarouselSlider.builder(
+                  itemCount: sliders.length,
+                  itemBuilder: (context, index, realIndex) {
+                    String? res = sliders[index].image;
+                    String? res1 = sliders[index].name;
+                    return buildImage(res!, index, res1!);
+                  },
+                  options: CarouselOptions(
+                      height: 250,
+                      // viewportFraction: 1,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          activeIndex = index;
+                        });
+                      })),
+              SizedBox(
+                height: 30.0,
+              ),
+              Center(child: buildIndicator()),
+              SizedBox(
+                height: 30.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Xu hướng",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0),
+                    ),
+                    Text(
+                      "Xem thêm",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Material(
+                  elevation: 3.0,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 5.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset("images/science.jpg",
+                                height: 120, width: 120, fit: BoxFit.cover),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8.0,
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.7,
+                              child: Text(
+                                "Mot con vit xoe ra 2 cai canh no keu rang",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.0),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 7.0,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.7,
+                              child: Text(
+                                "roi no cat canh len troi luon",
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   Widget buildImage(String image, int index, String name) => Container(
         margin: EdgeInsets.symmetric(horizontal: 5.0),
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(
-                height: 250,
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                imageUrl: image,
-                placeholder: (context, url) => CircularProgressIndicator(),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
-            ),
-            Container(
+        child: Stack(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              image,
               height: 250,
-              padding: EdgeInsets.only(left: 10.0),
-              margin: EdgeInsets.only(top: 170.0),
+              fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.black45,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10))),
-              child: Center(
-                child: Text(
-                  name,
-                  maxLines: 2,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            )
-          ],
-        ),
+            ),
+          ),
+          Container(
+            height: 250,
+            padding: EdgeInsets.only(left: 15.0),
+            margin: EdgeInsets.only(top: 170.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10))),
+            child: Text(
+              name,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          )
+        ]),
       );
-
-  Widget buildIndicator() {
-    // Kiểm tra nếu sliders.length == 0 hoặc activeIndex không hợp lệ (0 hoặc < sliders.length)
-    if (sliders.isEmpty || activeIndex < 0 || activeIndex >= sliders.length) {
-      return SizedBox(); // Trả về SizedBox rỗng nếu không có sliders
-    }
-
-    return AnimatedSmoothIndicator(
-      activeIndex: activeIndex,
-      count: sliders.length,
-      effect: SlideEffect(
-        dotWidth: 15,
-        dotHeight: 15,
-        activeDotColor: Colors.blue,
-      ),
-    );
-  }
+  Widget buildIndicator() => AnimatedSmoothIndicator(
+        activeIndex: activeIndex,
+        count: sliders.length,
+        effect: SlideEffect(
+            dotWidth: 15, dotHeight: 15, activeDotColor: Colors.blue),
+      );
 }
 
 class CategoryTile extends StatelessWidget {
-  final String image, categoryName;
-  CategoryTile({required this.categoryName, required this.image});
+  final image, categoryName;
+  CategoryTile({this.categoryName, this.image});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CategoryNews(name: categoryName)));
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 16),
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Image.asset(
-                image,
-                width: 120,
-                height: 70,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Container(
+    return Container(
+      margin: EdgeInsets.only(right: 16),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              image,
               width: 120,
               height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Colors.black38,
-              ),
-              child: Center(
-                  child: Text(
+              fit: BoxFit.cover,
+            ),
+          ),
+          Container(
+            width: 120,
+            height: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.black38,
+            ),
+            child: Center(
+              child: Text(
                 categoryName,
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.bold),
-              )),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BlogTile extends StatelessWidget {
-  final String imageUrl, title, desc, url;
-  BlogTile(
-      {required this.desc,
-      required this.imageUrl,
-      required this.title,
-      required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ArticleView(blogUrl: url)));
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Material(
-            elevation: 3.0,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(width: 8.0),
-                  Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.7,
-                        child: Text(
-                          title,
-                          maxLines: 2,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 17.0),
-                        ),
-                      ),
-                      SizedBox(height: 7.0),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.7,
-                        child: Text(
-                          desc,
-                          maxLines: 3,
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
-          ),
-        ),
+          )
+        ],
       ),
     );
   }

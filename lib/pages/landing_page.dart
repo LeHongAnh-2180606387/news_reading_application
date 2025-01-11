@@ -33,24 +33,25 @@ class _LandingPageState extends State<LandingPage> {
               height: 20.0,
             ),
             Text(
-              "News from around the\n        world for you",
+              "Mang cả thế giới đến trước mắt bạn",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 26.0,
-                  fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Text(
-              "Best time to read, take your time to read\n               a little more of this world",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w500),
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Pacifico'),
             ),
             SizedBox(
               height: 40.0,
+            ),
+            Text(
+              "Dẫn đầu xu hướng, cập nhật từng khoảnh khắc!",
+              style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500),
+            ),
+            SizedBox(
+              height: 50.0,
             ),
             GestureDetector(
               onTap: () {
@@ -69,7 +70,7 @@ class _LandingPageState extends State<LandingPage> {
                         borderRadius: BorderRadius.circular(30)),
                     child: Center(
                       child: Text(
-                        "Get Started",
+                        "Băt đầu nào",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 17.0,
