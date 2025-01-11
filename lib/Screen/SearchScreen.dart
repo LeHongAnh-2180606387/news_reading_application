@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/CODE/Article.dart';
-import 'package:news_reading_application/CODE/Search.dart';
+import 'package:news_reading_application/CODE/Model/Article.dart';
+import 'package:news_reading_application/CODE/Service/Search.dart';
 
 class SearchScreen extends StatefulWidget {
   @override

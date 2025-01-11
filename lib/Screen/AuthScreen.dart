@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/CODE/GoogleSignInService.dart';
-import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
+import 'package:news_reading_application/CODE/Service/GoogleSignInService.dart';
+import 'package:news_reading_application/Screen/HomeScreen.dart';
 //import 'package:news_reading_application/CODE/google_sign_in_service.dart';
-import 'package:news_reading_application/CODE/login.dart';  // Import GoogleSignInService
+import 'package:news_reading_application/CODE/Service/login.dart';  // Import GoogleSignInService
 
 class AuthScreen extends StatefulWidget {
   @override

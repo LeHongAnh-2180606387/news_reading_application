@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
-import 'package:news_reading_application/CODE/Profile/ProfileScreen.dart';
-import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
-import 'package:news_reading_application/CODE/Screen/Dashboard.dart';
-import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
+import 'package:news_reading_application/Screen/ChatScreen.dart';
+import 'package:news_reading_application/Screen/ProfileScreen.dart';
+import 'package:news_reading_application/Screen/AuthScreen.dart';
+import 'package:news_reading_application/Screen/Dashboard.dart';
+import 'package:news_reading_application/Screen/HomeScreen.dart';
 
 Future<void> registerWithEmailPassword(BuildContext context, String email, String password, String username) async {
   try {

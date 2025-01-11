@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';  
-import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
-import 'package:news_reading_application/CODE/weather_service.dart';
+import 'package:news_reading_application/Screen/AuthScreen.dart';
+import 'package:news_reading_application/CODE/Service/weather_service.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

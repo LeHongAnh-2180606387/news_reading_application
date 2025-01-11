@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:news_reading_application/CODE/Article.dart';
+import 'package:news_reading_application/CODE/Model/Article.dart';
 
 Future<List<Article>> searchArticles(String query) async {
   // Tìm kiếm theo tiêu đề

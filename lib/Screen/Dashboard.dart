@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:news_reading_application/CODE/Article.dart';
-import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
-import 'package:news_reading_application/CODE/Profile/ProfileScreen.dart';
-import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
-import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
-import 'package:news_reading_application/CODE/Search.dart';
-import 'package:news_reading_application/CODE/weather_service.dart';
+import 'package:news_reading_application/CODE/Model/Article.dart';
+import 'package:news_reading_application/Screen/ChatScreen.dart';
+import 'package:news_reading_application/Screen/ProfileScreen.dart';
+import 'package:news_reading_application/Screen/AuthScreen.dart';
+import 'package:news_reading_application/Screen/HomeScreen.dart';
+import 'package:news_reading_application/CODE/Service/Search.dart';
+import 'package:news_reading_application/CODE/Service/weather_service.dart';
 
 class Dashboard extends StatefulWidget {
   @override

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:news_reading_application/CODE/Chat/Screen/ChatScreen.dart';
-import 'package:news_reading_application/CODE/Screen/Dashboard.dart';
-import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
-import 'package:news_reading_application/CODE/Screen/LoginPage_GitHub.dart';
-import 'package:news_reading_application/CODE/Screen/SearchScreen.dart';
+import 'package:news_reading_application/Screen/ChatScreen.dart';
+import 'package:news_reading_application/Screen/Dashboard.dart';
+import 'package:news_reading_application/Screen/HomeScreen.dart';
+import 'package:news_reading_application/Screen/LoginPage_GitHub.dart';
+import 'package:news_reading_application/Screen/SearchScreen.dart';
 import 'firebase_options.dart';
-import 'package:news_reading_application/CODE/Screen/AuthScreen.dart';
+import 'package:news_reading_application/Screen/AuthScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {

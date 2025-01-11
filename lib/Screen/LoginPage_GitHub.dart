@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
-import 'package:news_reading_application/CODE/Screen/HomeScreen.dart';
+import 'package:news_reading_application/Screen/HomeScreen.dart';
 
 
 class LoginPage extends StatelessWidget {
