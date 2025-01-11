@@ -50,11 +50,10 @@ class _CategoryNewsState extends State<CategoryNews> {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 return ShowCategory(
-                  Image: categories[index].urlToImage!,
-                  desc: categories[index].description!,
-                  title: categories[index].title!,
-                  url: categories[index].url!
-                );
+                    Image: categories[index].urlToImage!,
+                    desc: categories[index].description!,
+                    title: categories[index].title!,
+                    url: categories[index].url!);
               }),
         ));
   }
@@ -62,13 +61,18 @@ class _CategoryNewsState extends State<CategoryNews> {
 
 class ShowCategory extends StatelessWidget {
   String Image, desc, title, url;
-  ShowCategory({required this.Image, required this.desc, required this.title, required this.url});
+  ShowCategory(
+      {required this.Image,
+      required this.desc,
+      required this.title,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> ArticleView(blogUrl: url)));
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ArticleView(blogUrl: url)));
       },
       child: Container(
         child: Column(
@@ -93,8 +97,13 @@ class ShowCategory extends StatelessWidget {
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold),
             ),
-            Text(desc, maxLines: 3,),
-            SizedBox(height: 20.0,),
+            Text(
+              desc,
+              maxLines: 3,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
           ],
         ),
       ),

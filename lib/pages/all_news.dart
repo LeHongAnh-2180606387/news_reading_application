@@ -5,6 +5,7 @@ import 'package:news_reading_application/models/slider_model.dart';
 import 'package:news_reading_application/pages/article_view.dart';
 import 'package:news_reading_application/services/news.dart';
 import 'package:news_reading_application/services/slider_data.dart';
+
 class AllNews extends StatefulWidget {
   String news;
   AllNews({required this.news});
@@ -16,27 +17,37 @@ class AllNews extends StatefulWidget {
 class _AllNewsState extends State<AllNews> {
   List<sliderModel> sliders = [];
   List<ArticleModel> articles = [];
+  bool _loading = true;
+  bool loading2 = true;
   void initState() {
     getSlider();
     getNews();
     super.initState();
   }
 
-  getNews() async {
-    News newsclass = News();
-    await newsclass.getNews();
-    articles = newsclass.news;
+  Future<void> getSlider() async {
+    Sliders slider = Sliders();
+    await slider.getSlider();
+    if (slider.sliders.isNotEmpty) {
+      sliders = slider.sliders;
+    } else {
+      print("No sliders available");
+    }
     setState(() {
-      
+      loading2 = false;
     });
   }
 
-  getSlider() async {
-    Sliders slider = Sliders();
-    await slider.getSlider();
-    sliders = slider.sliders;
+  Future<void> getNews() async {
+    News newsclass = News();
+    await newsclass.getNews();
+    if (newsclass.news.isNotEmpty) {
+      articles = newsclass.news;
+    } else {
+      print("No articles available");
+    }
     setState(() {
-      
+      _loading = false;
     });
   }
 
@@ -59,21 +70,23 @@ class _AllNewsState extends State<AllNews> {
             itemCount:
                 widget.news == "Breaking" ? sliders.length : articles.length,
             itemBuilder: (context, index) {
-              print(articles.length);
-              print(sliders.length);
-              return AllNewsSection(
-                  Image: widget.news == "Breaking"
-                      ? sliders[index].urlToImage!
-                      : articles[index].urlToImage!,
-                  desc: widget.news == "Breaking"
-                      ? sliders[index].description!
-                      : articles[index].description!,
-                  title: widget.news == "Breaking"
-                      ? sliders[index].title!
-                      : articles[index].title!,
-                  url: widget.news == "Breaking"
-                      ? sliders[index].url!
-                      : articles[index].url!);
+              if (widget.news == "Breaking" && sliders.isNotEmpty) {
+                return AllNewsSection(
+                  Image: sliders[index].urlToImage!,
+                  desc: sliders[index].description!,
+                  title: sliders[index].title!,
+                  url: sliders[index].url!,
+                );
+              } else if (articles.isNotEmpty) {
+                return AllNewsSection(
+                  Image: articles[index].urlToImage!,
+                  desc: articles[index].description!,
+                  title: articles[index].title!,
+                  url: articles[index].url!,
+                );
+              } else {
+                return Center(child: Text("No data available"));
+              }
             }),
       ),
     );

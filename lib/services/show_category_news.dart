@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -9,7 +11,7 @@ class ShowCategoryNews {
 
   Future<void> getCategoriesNews(String category) async {
     String url =
-        "https://newsapi.org/v2/top-headlines?country=us&category=$category&apiKey=YOUR_APIKEY";
+        "https://newsapi.org/v2/everything?q=tesla&from=2024-12-10&sortBy=publishedAt&apiKey=bff42077feb94c4eaeafbc0891768e33";
     var response = await http.get(Uri.parse(url));
 
     var jsonData = jsonDecode(response.body);

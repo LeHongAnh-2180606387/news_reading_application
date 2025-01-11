@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, prefer_const_literals_to_create_immutables
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:news_reading_application/models/slider_model.dart';
 import 'package:news_reading_application/pages/all_news.dart';
 import 'package:news_reading_application/pages/article_view.dart';
 import 'package:news_reading_application/pages/category_news.dart';
-
 import 'package:news_reading_application/services/data.dart';
 import 'package:news_reading_application/services/news.dart';
 import 'package:news_reading_application/services/slider_data.dart';
@@ -29,27 +26,36 @@ class _HomeState extends State<Home> {
   bool _loading = true, loading2 = true;
 
   int activeIndex = 0;
+
   @override
   void initState() {
+    super.initState();
     categories = getCategories();
     getSlider();
     getNews();
-    super.initState();
   }
 
-  getNews() async {
+  Future<void> getNews() async {
     News newsclass = News();
     await newsclass.getNews();
-    articles = newsclass.news;
+    if (newsclass.news.isNotEmpty) {
+      articles = newsclass.news;
+    } else {
+      print("No articles available");
+    }
     setState(() {
       _loading = false;
     });
   }
 
-  getSlider() async {
+  Future<void> getSlider() async {
     Sliders slider = Sliders();
     await slider.getSlider();
-    sliders = slider.sliders;
+    if (slider.sliders.isNotEmpty) {
+      sliders = slider.sliders;
+    } else {
+      print("No sliders available");
+    }
     setState(() {
       loading2 = false;
     });
@@ -62,9 +68,13 @@ class _HomeState extends State<Home> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Flutter"),
+            Text("News"),
             Text(
-              "News",
+              "Reading",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Application",
               style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
             )
           ],
@@ -79,25 +89,29 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Categories Section
                     Container(
                       margin: EdgeInsets.only(left: 10.0),
                       height: 70,
                       child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: categories.length,
-                          itemBuilder: (context, index) {
-                            return CategoryTile(
-                              image: categories[index].image,
-                              categoryName: categories[index].categoryName,
-                            );
-                          }),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          return CategoryTile(
+                            image:
+                                categories[index].image ?? '', // Kiểm tra null
+                            categoryName: categories[index].categoryName ??
+                                'No category', // Kiểm tra null
+                          );
+                        },
+                      ),
                     ),
-                    SizedBox(
-                      height: 30.0,
-                    ),
+                    SizedBox(height: 30.0),
+
+                    // Breaking News Section
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -129,38 +143,43 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    SizedBox(height: 20.0),
+
+                    // Carousel Slider Section
                     loading2
                         ? Center(child: CircularProgressIndicator())
-                        : CarouselSlider.builder(
-                            itemCount: 5,
-                            itemBuilder: (context, index, realIndex) {
-                              String? res = sliders[index].urlToImage;
-                              String? res1 = sliders[index].title;
-                              return buildImage(res!, index, res1!);
-                            },
-                            options: CarouselOptions(
-                                height: 250,
-                                autoPlay: true,
-                                enlargeCenterPage: true,
-                                enlargeStrategy:
-                                    CenterPageEnlargeStrategy.height,
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    activeIndex = index;
-                                  });
-                                })),
-                    SizedBox(
-                      height: 30.0,
-                    ),
+                        : sliders.isNotEmpty
+                            ? CarouselSlider.builder(
+                                itemCount: sliders.length,
+                                itemBuilder: (context, index, realIndex) {
+                                  String res = sliders[index].urlToImage ??
+                                      ''; // Kiểm tra null
+                                  String res1 = sliders[index].title ??
+                                      'No title'; // Kiểm tra null
+                                  return buildImage(res, index, res1);
+                                },
+                                options: CarouselOptions(
+                                  height: 250,
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                  enlargeStrategy:
+                                      CenterPageEnlargeStrategy.height,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      activeIndex = index;
+                                    });
+                                  },
+                                ),
+                              )
+                            : Center(child: Text("No sliders available")),
+
+                    SizedBox(height: 30.0),
                     Center(child: buildIndicator()),
-                    SizedBox(
-                      height: 30.0,
-                    ),
+                    SizedBox(height: 30.0),
+
+                    // Trending News Section
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -192,22 +211,30 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Container(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
-                          itemCount: articles.length,
-                          itemBuilder: (context, index) {
-                            return BlogTile(
-                                url: articles[index].url!,
-                                desc: articles[index].description!,
-                                imageUrl: articles[index].urlToImage!,
-                                title: articles[index].title!);
-                          }),
-                    )
+                    SizedBox(height: 10.0),
+
+                    // Articles Section
+                    articles.isNotEmpty
+                        ? Container(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              itemCount: articles.length,
+                              itemBuilder: (context, index) {
+                                return BlogTile(
+                                  url: articles[index].url ??
+                                      '', // Kiểm tra null
+                                  desc: articles[index].description ??
+                                      'No description', // Kiểm tra null
+                                  imageUrl: articles[index].urlToImage ??
+                                      '', // Kiểm tra null
+                                  title: articles[index].title ??
+                                      'No title', // Kiểm tra null
+                                );
+                              },
+                            ),
+                          )
+                        : Center(child: Text("No articles available")),
                   ],
                 ),
               ),
@@ -216,51 +243,66 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildImage(String image, int index, String name) => Container(
-      margin: EdgeInsets.symmetric(horizontal: 5.0),
-      child: Stack(children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: CachedNetworkImage(
-            height: 250,
-            fit: BoxFit.cover,
-            width: MediaQuery.of(context).size.width,
-            imageUrl: image,
-          ),
-        ),
-        Container(
-          height: 250,
-          padding: EdgeInsets.only(left: 10.0),
-          margin: EdgeInsets.only(top: 170.0),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: Colors.black45,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10))),
-          child: Center(
-            child: Text(
-              name,
-              maxLines: 2,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold),
+        margin: EdgeInsets.symmetric(horizontal: 5.0),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CachedNetworkImage(
+                height: 250,
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
+                imageUrl: image,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
-          ),
-        )
-      ]));
-
-  Widget buildIndicator() => AnimatedSmoothIndicator(
-        activeIndex: activeIndex,
-        count: 5,
-        effect: SlideEffect(
-            dotWidth: 15, dotHeight: 15, activeDotColor: Colors.blue),
+            Container(
+              height: 250,
+              padding: EdgeInsets.only(left: 10.0),
+              margin: EdgeInsets.only(top: 170.0),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Colors.black45,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10))),
+              child: Center(
+                child: Text(
+                  name,
+                  maxLines: 2,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          ],
+        ),
       );
+
+  Widget buildIndicator() {
+    // Kiểm tra nếu sliders.length == 0 hoặc activeIndex không hợp lệ (0 hoặc < sliders.length)
+    if (sliders.isEmpty || activeIndex < 0 || activeIndex >= sliders.length) {
+      return SizedBox(); // Trả về SizedBox rỗng nếu không có sliders
+    }
+
+    return AnimatedSmoothIndicator(
+      activeIndex: activeIndex,
+      count: sliders.length,
+      effect: SlideEffect(
+        dotWidth: 15,
+        dotHeight: 15,
+        activeDotColor: Colors.blue,
+      ),
+    );
+  }
 }
 
 class CategoryTile extends StatelessWidget {
-  final image, categoryName;
-  CategoryTile({this.categoryName, this.image});
+  final String image, categoryName;
+  CategoryTile({required this.categoryName, required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +350,7 @@ class CategoryTile extends StatelessWidget {
 }
 
 class BlogTile extends StatelessWidget {
-  String imageUrl, title, desc, url;
+  final String imageUrl, title, desc, url;
   BlogTile(
       {required this.desc,
       required this.imageUrl,
@@ -335,18 +377,16 @@ class BlogTile extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            height: 120,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          ))),
-                  SizedBox(
-                    width: 8.0,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  SizedBox(width: 8.0),
                   Column(
                     children: [
                       Container(
@@ -360,9 +400,7 @@ class BlogTile extends StatelessWidget {
                               fontSize: 17.0),
                         ),
                       ),
-                      SizedBox(
-                        height: 7.0,
-                      ),
+                      SizedBox(height: 7.0),
                       Container(
                         width: MediaQuery.of(context).size.width / 1.7,
                         child: Text(
