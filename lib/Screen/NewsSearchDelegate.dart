@@ -67,7 +67,12 @@ class NewsSearchDelegate extends SearchDelegate {
 
             return ListTile(
               leading: imageUrl.isNotEmpty
-                  ? Image.network(imageUrl)
+                  ? Image.network(
+                      imageUrl,
+                      width: 50, // Chỉ định kích thước hình ảnh
+                      height: 50, // Đảm bảo tất cả hình ảnh đều có cùng kích thước
+                      fit: BoxFit.cover, // Căn chỉnh hình ảnh để không bị biến dạng
+                    )
                   : null,
               title: Text(
                 article['title'] ?? 'No Title',

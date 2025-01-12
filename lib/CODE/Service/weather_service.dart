@@ -76,7 +76,31 @@ String getWeatherAnimation(String iconCode) {
       return 'assets/Sun.json';
     case '03n':  // Scattered clouds (night)
       return 'assets/Sun.json';
+    case '04d':  // Broken clouds (day)
+      return 'assets/Cloudy.json'; // Ví dụ cho mây rải rác
+    case '04n':  // Broken clouds (night)
+      return 'assets/CloudyNight.json'; // Ví dụ cho mây rải rác vào ban đêm
+    case '09d':  // Shower rain (day)
+      return 'assets/Rainy.json';
+    case '09n':  // Shower rain (night)
+      return 'assets/RainyNight.json';
+    case '10d':  // Rain (day)
+      return 'assets/Rainy.json';
+    case '10n':  // Rain (night)
+      return 'assets/RainyNight.json';
+    case '11d':  // Thunderstorm (day)
+      return 'assets/Thunderstorm.json';
+    case '11n':  // Thunderstorm (night)
+      return 'assets/ThunderstormNight.json';
+    case '13d':  // Snow (day)
+      return 'assets/Snow.json';
+    case '13n':  // Snow (night)
+      return 'assets/SnowNight.json';
+    case '50d':  // Mist (day)
+      return 'assets/Mist.json';
+    case '50n':  // Mist (night)
+      return 'assets/MistNight.json';
     default:
-      return 'assets/default_weather.json';  // Default animation if no match
+      return 'assets/DefaultWeather.json';  // Default animation if no match
   }
 }

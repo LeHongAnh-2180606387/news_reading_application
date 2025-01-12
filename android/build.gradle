@@ -1,14 +1,14 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    // Messaging
-    dependencies {
-        classpath 'com.google.gms:google-services:4.3.10' // Đúng vị trí
-        // Các classpath khác như Gradle plugin
-    }
-}
+// buildscript {
+//     repositories {
+//         google()
+//         mavenCentral()
+//     }
+//     // Messaging
+//     dependencies {
+//         classpath 'com.google.gms:google-services:4.3.10' // Đúng vị trí
+//         // Các classpath khác như Gradle plugin
+//     }
+// }
 
 allprojects {
     repositories {
