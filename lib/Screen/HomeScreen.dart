@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -64,16 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadWeather();
     _checkLoginStatus();
     fetchNews(); // Fetch initial news
+
   }
 
 // Kiểm tra trạng thái đăng nhập
   Future<void> _checkLoginStatus() async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     _user = _googleSignIn.currentUser;
-
-    // setState(() {
-    //   isLoggedIn = _user != null;  // Kiểm tra nếu có user tức là đã đăng nhập
-    // });
   }
 
 

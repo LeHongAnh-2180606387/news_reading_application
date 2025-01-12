@@ -63,3 +63,6 @@ flutter {
     source = "../.."
 }
 
+
+// Messaging
+apply plugin: 'com.google.gms.google-services'
