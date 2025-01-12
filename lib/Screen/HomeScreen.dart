@@ -8,11 +8,13 @@ import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:news_reading_application/CODE/Service/weather_service.dart';
 import 'package:news_reading_application/Screen/AuthScreen.dart';
+import 'package:news_reading_application/Screen/NewsSearchDelegate.dart';
 import 'package:news_reading_application/Screen/bookmark_screen.dart';
 
 import 'package:news_reading_application/Screen/news_webview.dart';
 
-import 'package:news_reading_application/CODE/Service/news_search_delegate.dart';
+import 'package:news_reading_application/CODE/Service/SearchService.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -29,6 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> newsArticles = [];
   List<dynamic> bookmarkedArticles = []; // To store bookmarked articles
   bool isLoading = true;
+
+  // Tìm kiếm
+   final SearchService _searchService = SearchService();
+  List<Map<String, dynamic>> searchResults = [];  // Danh sách kết quả tìm kiếm
+  TextEditingController searchController = TextEditingController(); // Controller tìm kiếm
+
 
 
   // String weatherAnimation = ''; // Animation for weather
@@ -171,6 +179,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Hàm thực hiện tìm kiếm
+  Future<void> _performSearch(String query) async {
+    if (query.isNotEmpty) {
+      var results = await _searchService.searchArticles(query);
+      setState(() {
+        searchResults = results;
+      });
+    } else {
+      setState(() {
+        searchResults = [];
+      });
+    }
+  }
+
 
 
   void toggleBookmark(dynamic article) {
@@ -188,7 +210,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('News App'),
-        
         actions: [
           IconButton(
             icon: const Icon(Icons.bookmark),
@@ -202,24 +223,21 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
               showSearch(
                 context: context,
-                delegate: NewsSearchDelegate(fetchNews),
+                delegate: NewsSearchDelegate(
+                  searchService: _searchService,
+                ),
               );
             },
           ),
-
-
-          // Nut
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () => _signOut(context),
           ),
-
         ],
       ),
       body: isLoading
@@ -227,145 +245,206 @@ class _HomeScreenState extends State<HomeScreen> {
           : Column(
               children: [
                 // Weather Animation
-                isLoading
-                  ? CircularProgressIndicator()  // Display loading while fetching
-                  : weatherAnimation.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 20.0, top: 10.0),  // Add top and left padding
-                          child: Align(
-                            alignment: Alignment.centerLeft,  // Align icon to the left
-                            child: Lottie.asset(
-                              weatherAnimation,  // Load animation from JSON file
-                              width: 50,
-                              height: 50,
-                            ),
+                weatherAnimation.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Lottie.asset(
+                            weatherAnimation,
+                            width: 50,
+                            height: 50,
                           ),
-                        )
-                      : Text('Không thể lấy dữ liệu thời tiết'),
-                const SizedBox(height: 20),  // Add 20 spacing
-
-
-                // Category Chips
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 10.0),
-                    child: Row(
-                      children: categories.map((category) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ChoiceChip(
-                            label: Text(category),
-                            selected: selectedCategory == category,
-                            onSelected: (isSelected) {
-                              if (isSelected) {
-                                setState(() {
-                                  selectedCategory = category;
-                                  fetchNews(
-                                      category:
-                                          category); // Fetch news for the selected category
-                                });
-                              }
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-
-                // News List
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: newsArticles.length,
-                    itemBuilder: (context, index) {
-                      final article = newsArticles[index];
-                      return Card(
-                        margin: const EdgeInsets.all(8.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        elevation: 4,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (article['urlToImage'] != null)
-                              ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(12.0),
-                                ),
-                                child: Image.network(
-                                  article['urlToImage'],
-                                  height: 200,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
+                      )
+                    : const Text('Không thể lấy dữ liệu thời tiết'),
+
+                const SizedBox(height: 20),
+
+                // Kết quả tìm kiếm
+                Expanded(
+                  child: searchResults.isEmpty
+                      ? ListView.builder(
+                          itemCount: newsArticles.length,
+                          itemBuilder: (context, index) {
+                            final article = newsArticles[index];
+                            return Card(
+                              margin: const EdgeInsets.all(8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              elevation: 4,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    article['title'] ?? 'No Title',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  if (article['urlToImage'] != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12.0),
+                                      ),
+                                      child: Image.network(
+                                        article['urlToImage'],
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    article['description'] ?? 'No Description',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => WebViewScreen(
-                                            url: article['url'],
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Tiêu đề bài viết
+                                        Text(
+                                          article['title'] ?? 'No Title',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      );
-                                    },
-                                    child: const Text("Read More"),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      bookmarkedArticles.contains(article)
-                                          ? Icons.bookmark
-                                          : Icons.bookmark_border,
-                                      color:
-                                          bookmarkedArticles.contains(article)
-                                              ? Colors.red
-                                              : null,
+                                        const SizedBox(height: 8),
+                                        
+                                        // Mô tả bài viết
+                                        Text(
+                                          article['description'] ?? 'No Description',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                        ),
+                                      ],
                                     ),
-                                    onPressed: () {
-                                      toggleBookmark(article);
-                                    },
                                   ),
+
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    WebViewScreen(
+                                                  url: article['url'],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text("Read More"),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            bookmarkedArticles.contains(article)
+                                                ? Icons.bookmark
+                                                : Icons.bookmark_border,
+                                            color: bookmarkedArticles.contains(article)
+                                                ? Colors.red
+                                                : null,
+                                          ),
+                                          onPressed: () {
+                                            toggleBookmark(article);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                            )
-                          ],
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: searchResults.length,
+                          itemBuilder: (context, index) {
+                            final article = searchResults[index];
+                            return Card(
+                              margin: const EdgeInsets.all(8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              elevation: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (article['urlToImage'] != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12.0),
+                                      ),
+                                      child: Image.network(
+                                        article['urlToImage'],
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          article['title'] ?? 'No Title',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          article['description'] ?? 'No Description',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 14, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    WebViewScreen(
+                                                  url: article['url'],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text("Read More"),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            bookmarkedArticles.contains(article)
+                                                ? Icons.bookmark
+                                                : Icons.bookmark_border,
+                                            color: bookmarkedArticles.contains(article)
+                                                ? Colors.red
+                                                : null,
+                                          ),
+                                          onPressed: () {
+                                            toggleBookmark(article);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),
