@@ -15,7 +15,6 @@ import 'package:news_reading_application/Screen/news_webview.dart';
 
 import 'package:news_reading_application/CODE/Service/SearchService.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -33,18 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
 
   // Tìm kiếm
-   final SearchService _searchService = SearchService();
-  List<Map<String, dynamic>> searchResults = [];  // Danh sách kết quả tìm kiếm
-  TextEditingController searchController = TextEditingController(); // Controller tìm kiếm
-
-
+  final SearchService _searchService = SearchService();
+  List<Map<String, dynamic>> searchResults = []; // Danh sách kết quả tìm kiếm
+  TextEditingController searchController =
+      TextEditingController(); // Controller tìm kiếm
 
   // String weatherAnimation = ''; // Animation for weather
   String weatherAnimation = ''; // Animation for weather
   //bool isLoggedIn = false; // Biến trạng thái đăng nhập
   GoogleSignInAccount? _user;
-
-
 
   // Categories and selected category
   List<String> categories = [
@@ -76,62 +72,64 @@ class _HomeScreenState extends State<HomeScreen> {
     // });
   }
 
-
   Future<void> _signIn() async {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  try {
-    await _googleSignIn.signIn();
-    // Cập nhật trạng thái sau khi đăng nhập
-    _checkLoginStatus();
+    try {
+      await _googleSignIn.signIn();
+      // Cập nhật trạng thái sau khi đăng nhập
+      _checkLoginStatus();
 
-    // Sau khi đăng nhập thành công, chuyển đến AuthScreen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => AuthScreen()), // Chuyển đến màn hình đăng nhập
-    );
-  } catch (e) {
-    print('Đăng nhập thất bại: $e');
+      // Sau khi đăng nhập thành công, chuyển đến AuthScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                AuthScreen()), // Chuyển đến màn hình đăng nhập
+      );
+    } catch (e) {
+      print('Đăng nhập thất bại: $e');
+    }
   }
-}
 
- // Đăng xuất
+  // Đăng xuất
   Future<void> _signOut(BuildContext context) async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     await _googleSignIn.signOut(); // Đăng xuất khỏi Google
     await FirebaseAuth.instance.signOut(); // Đăng xuất khỏi Firebase
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
+      MaterialPageRoute(
+          builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
     );
   }
 
   Future<void> _loadWeather() async {
-  try {
-    // Lấy vị trí người dùng
-    Position position = await getUserLocation();
-    double lat = position.latitude;
-    double lon = position.longitude;
+    try {
+      // Lấy vị trí người dùng
+      Position position = await getUserLocation();
+      double lat = position.latitude;
+      double lon = position.longitude;
 
-    // Lấy mã icon thời tiết
-    String iconCode = await fetchWeatherIcon(lat, lon);
+      // Lấy mã icon thời tiết
+      String iconCode = await fetchWeatherIcon(lat, lon);
 
-    if (mounted) {
-      setState(() {
-        weatherAnimation = getWeatherAnimation(iconCode);  // Gọi hàm để lấy đường dẫn file JSON cho animation
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          weatherAnimation = getWeatherAnimation(
+              iconCode); // Gọi hàm để lấy đường dẫn file JSON cho animation
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      print(e);
     }
-  } catch (e) {
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-    print(e);
   }
-}
-
 
   Future<void> fetchNews({String? category, String? query}) async {
     if (!mounted) return; // Check if widget is still mounted
@@ -192,8 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
-
 
   void toggleBookmark(dynamic article) {
     setState(() {
@@ -260,7 +256,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     : const Text('Không thể lấy dữ liệu thời tiết'),
 
                 const SizedBox(height: 20),
-
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 10.0),
+                    child: Row(
+                      children: categories.map((category) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ChoiceChip(
+                            label: Text(category),
+                            selected: selectedCategory == category,
+                            onSelected: (isSelected) {
+                              if (isSelected) {
+                                setState(() {
+                                  selectedCategory = category;
+                                  fetchNews(
+                                      category:
+                                          category); // Fetch news for the selected category
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
                 // Kết quả tìm kiếm
                 Expanded(
                   child: searchResults.isEmpty
@@ -292,7 +315,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         // Tiêu đề bài viết
                                         Text(
@@ -303,18 +327,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                         const SizedBox(height: 8),
-                                        
+
                                         // Mô tả bài viết
                                         Text(
-                                          article['description'] ?? 'No Description',
+                                          article['description'] ??
+                                              'No Description',
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                          style: const TextStyle(
+                                              fontSize: 14, color: Colors.grey),
                                         ),
                                       ],
                                     ),
                                   ),
-
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Row(
@@ -340,7 +365,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             bookmarkedArticles.contains(article)
                                                 ? Icons.bookmark
                                                 : Icons.bookmark_border,
-                                            color: bookmarkedArticles.contains(article)
+                                            color: bookmarkedArticles
+                                                    .contains(article)
                                                 ? Colors.red
                                                 : null,
                                           ),
@@ -384,7 +410,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           article['title'] ?? 'No Title',
@@ -395,7 +422,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         const SizedBox(height: 8),
                                         Text(
-                                          article['description'] ?? 'No Description',
+                                          article['description'] ??
+                                              'No Description',
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
@@ -429,7 +457,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             bookmarkedArticles.contains(article)
                                                 ? Icons.bookmark
                                                 : Icons.bookmark_border,
-                                            color: bookmarkedArticles.contains(article)
+                                            color: bookmarkedArticles
+                                                    .contains(article)
                                                 ? Colors.red
                                                 : null,
                                           ),
