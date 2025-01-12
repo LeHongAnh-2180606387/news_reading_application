@@ -4,7 +4,6 @@ import 'package:news_reading_application/Screen/ChatScreen.dart';
 import 'package:news_reading_application/Screen/Dashboard.dart';
 import 'package:news_reading_application/Screen/HomeScreen.dart';
 import 'package:news_reading_application/Screen/LoginPage_GitHub.dart';
-import 'package:news_reading_application/Screen/SearchScreen.dart';
 import 'firebase_options.dart';
 import 'package:news_reading_application/Screen/AuthScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

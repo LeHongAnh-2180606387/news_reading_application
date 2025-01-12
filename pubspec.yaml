@@ -26,9 +26,15 @@ dependencies:
    # Thời tiết
   lottie: ^3.2.0
   geolocator: ^13.0.2
-  http: ^1.2.2
+  # http: ^1.2.2
   geocoding: ^3.0.0
   image_picker: ^1.1.2
+
+  # Đọc báo
+  http:
+  flutter_inappwebview:
+  webview_flutter: ^4.10.0
+  cupertino_icons: ^1.0.8
 
 
 dev_dependencies:
@@ -41,4 +47,8 @@ flutter:
   assets:
     - assets/images/Default.jpg
     - assets/
+  # fonts:
+  #   - family: Pacifico
+  #     fonts:
+  #       - asset: fonts/Pacifico-Regular.ttf
 
