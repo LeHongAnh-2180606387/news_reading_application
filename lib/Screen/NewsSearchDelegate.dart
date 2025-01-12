@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:news_reading_application/CODE/Service/SearchService.dart';
 import 'package:news_reading_application/Screen/news_webview.dart';
@@ -32,6 +34,10 @@ class NewsSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    if (query.isEmpty) {
+      return const Center(child: Text('Please enter a search term.'));
+    }
+
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: searchService.searchArticles(query),
       builder: (context, snapshot) {
@@ -45,38 +51,34 @@ class NewsSearchDelegate extends SearchDelegate {
           return const Center(child: Text('No results found.'));
         }
 
-        // Loại bỏ các kết quả trùng lặp dựa trên URL
-        final results = <String, Map<String, dynamic>>{};
-        snapshot.data!.forEach((article) {
-          final url = article['url'];
-          if (url != null) {
-            results[url] = article; // Chỉ thêm vào nếu URL không null
-          }
-        });
+        // Loại bỏ các bài báo trùng lặp dựa trên trường 'url' hoặc 'title'
+        final Set<String> seen = HashSet(); // Set để lưu trữ URL đã thấy
+        final List<Map<String, dynamic>> uniqueResults = snapshot.data!
+          .where((article) => 
+              article['url'] != null && seen.add(article['url'] as String))
+          .toList();
 
-        // Chuyển lại thành list từ set đã lọc
-        final uniqueResults = results.values.toList();
 
         return ListView.builder(
           itemCount: uniqueResults.length,
           itemBuilder: (context, index) {
             final article = uniqueResults[index];
-            final imageUrl = article['urlToImage'];
+            final imageUrl = article['urlToImage'] ?? '';
 
             return ListTile(
               leading: imageUrl.isNotEmpty
-                  ? Image.network(imageUrl) // Hiển thị hình ảnh nếu có
+                  ? Image.network(imageUrl)
                   : null,
               title: Text(
                 article['title'] ?? 'No Title',
-                maxLines: 1, // Giới hạn title ở 1 dòng
-                overflow: TextOverflow.ellipsis, // Thêm dấu "..." nếu nội dung vượt quá
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 article['description'] ?? 'No Description',
-                maxLines: 2, // Giới hạn description ở 2 dòng
-                overflow: TextOverflow.ellipsis, // Thêm dấu "..." nếu nội dung vượt quá
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
               onTap: () {
@@ -94,12 +96,62 @@ class NewsSearchDelegate extends SearchDelegate {
         );
       },
     );
-
-
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Container(); // Bạn có thể hiển thị gợi ý ở đây nếu cần
+    if (query.isEmpty) {
+      return const Center(child: Text('Type to start searching...'));
+    }
+
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: searchService.getSuggestions(query),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error fetching suggestions.'));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No suggestions found.'));
+        }
+
+        // Loại bỏ gợi ý trùng lặp bằng Set dựa trên title
+        final Set<String> seenTitles = HashSet();
+        final List<Map<String, dynamic>> uniqueSuggestions = snapshot.data!
+            .where((article) => seenTitles.add(article['title'] as String))
+            .toList();
+
+        return ListView.builder(
+          itemCount: uniqueSuggestions.length,
+          itemBuilder: (context, index) {
+            final suggestion = uniqueSuggestions[index];
+            final truncatedSuggestion = suggestion['title'].length > 50
+                ? '${suggestion['title'].substring(0, 50)}...'
+                : suggestion['title'];
+            final imageUrl = suggestion['urlToImage'];
+
+            return ListTile(
+              leading: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : const Icon(Icons.image_not_supported, size: 50),
+              title: Text(truncatedSuggestion),
+              onTap: () {
+                query = suggestion['title']; // Set query thành gợi ý đã chọn
+                showResults(context); // Hiển thị kết quả tìm kiếm cho gợi ý đó
+              },
+            );
+          },
+        );
+      },
+    );
   }
+
+
 }

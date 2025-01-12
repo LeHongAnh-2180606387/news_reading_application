@@ -261,6 +261,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 20),
 
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 10.0),
+                    child: Row(
+                      children: categories.map((category) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ChoiceChip(
+                            label: Text(category),
+                            selected: selectedCategory == category,
+                            onSelected: (isSelected) {
+                              if (isSelected) {
+                                setState(() {
+                                  selectedCategory = category;
+                                  fetchNews(
+                                      category:
+                                          category); // Fetch news for the selected category
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+
                 // Kết quả tìm kiếm
                 Expanded(
                   child: searchResults.isEmpty
