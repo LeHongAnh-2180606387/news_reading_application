@@ -32,7 +32,7 @@ dependencies:
 
   # Đọc báo
   http:
-  flutter_inappwebview: ^6.1.5
+  flutter_inappwebview:
   webview_flutter: ^4.10.0
   cupertino_icons: ^1.0.8
 
@@ -51,11 +51,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/Default.jpg
     - assets/images/
+    - assets/
+    - assets/images/default.jpg
   fonts:
     - family: Pacifico
       fonts:
         - asset: assets/fonts/Pacifico-Regular.ttf
+
+
 
 

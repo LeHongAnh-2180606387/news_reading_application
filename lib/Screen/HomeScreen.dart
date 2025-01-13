@@ -283,10 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           horizontal: 8.0, vertical: 10.0),
                       child: Row(
                         children: categories.map((category) {
-                          final String imageUrl = categoryImages[
-                                  category.toLowerCase()] ??
-                              'assets/images/default.jpg'; // Ảnh mặc định nếu không tìm thấy
-
+                          final String imageUrl = categoryImages[category.toLowerCase()] ?? 'assets/images/default.jpg'; // Ảnh mặc định nếu không tìm thấy
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 4.0),
