@@ -52,8 +52,8 @@ class _DashboardState extends State<Dashboard> {
           : _screens[_selectedIndex], // Hiển thị màn hình tương ứng
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blueAccent, // Màu nền thanh Navigation
-        selectedItemColor: Colors.white, // Màu khi mục được chọn
-        unselectedItemColor: Colors.grey, // Màu khi mục không được chọn
+        selectedItemColor: Colors.black, // Màu khi mục được chọn
+        unselectedItemColor: Colors.white, // Màu khi mục không được chọn
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
