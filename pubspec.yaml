@@ -24,7 +24,7 @@ dependencies:
   provider: ^6.1.2
 
    # Thời tiết
-  lottie: ^3.2.0
+  lottie: ^3.3.1
   geolocator: ^13.0.2
   # http: ^1.2.2
   geocoding: ^3.0.0
@@ -32,7 +32,7 @@ dependencies:
 
   # Đọc báo
   http:
-  flutter_inappwebview:
+  flutter_inappwebview: ^6.1.5
   webview_flutter: ^4.10.0
   cupertino_icons: ^1.0.8
 
@@ -52,6 +52,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/Default.jpg
-    - assets/
+    - assets/images/
 
 

@@ -9,14 +9,12 @@ import 'firebase_options.dart';
 import 'package:news_reading_application/Screen/AuthScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
   await FirebaseMessaging.instance.subscribeToTopic("all");
 
   runApp(const MainApp());

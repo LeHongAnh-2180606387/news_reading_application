@@ -11,9 +11,9 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  int _selectedIndex = 0;  // Lưu chỉ số màn hình hiện tại
-  bool _isLoggedIn = false;  // Biến kiểm tra trạng thái đăng nhập
-  bool _isLoading = false;  // Biến kiểm tra trạng thái loading
+  int _selectedIndex = 0; // Lưu chỉ số màn hình hiện tại
+  bool _isLoggedIn = false; // Biến kiểm tra trạng thái đăng nhập
+  bool _isLoading = false; // Biến kiểm tra trạng thái loading
 
   // Danh sách các màn hình
   final List<Widget> _screens = [
@@ -25,7 +25,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();  // Kiểm tra trạng thái đăng nhập
+    _checkLoginStatus(); // Kiểm tra trạng thái đăng nhập
   }
 
   // Kiểm tra trạng thái đăng nhập
@@ -39,7 +39,7 @@ class _DashboardState extends State<Dashboard> {
   // Xử lý khi chọn tab
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;  // Cập nhật chỉ số của màn hình hiện tại
+      _selectedIndex = index; // Cập nhật chỉ số của màn hình hiện tại
     });
   }
 
@@ -50,11 +50,15 @@ class _DashboardState extends State<Dashboard> {
         title: Text(_screens[_selectedIndex].toString()),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())  // Hiển thị khi đang tải
-          : _screens[_selectedIndex],  // Hiển thị màn hình tương ứng
+          ? const Center(
+              child: CircularProgressIndicator()) // Hiển thị khi đang tải
+          : _screens[_selectedIndex], // Hiển thị màn hình tương ứng
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blueAccent, // Màu nền thanh Navigation
+        selectedItemColor: Colors.white, // Màu khi mục được chọn
+        unselectedItemColor: Colors.grey, // Màu khi mục không được chọn
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,  // Khi chọn tab, chuyển sang màn hình tương ứng
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

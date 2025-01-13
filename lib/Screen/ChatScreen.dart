@@ -14,30 +14,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
   final _controller = TextEditingController();
   String _enteredMessage = '';
-  
-void _sendMessage() async {
-  FocusScope.of(context).unfocus();
-  final user = FirebaseAuth.instance.currentUser;
-  final username = user!.displayName ?? 'Unknown';  // Lấy tên người dùng từ FirebaseAuth
-  
-  await FirebaseFirestore.instance.collection('chat').add({
-    'text': _enteredMessage,
-    'createdAt': Timestamp.now(),
-    'userId': user.uid,
-    'username': username,  // Lưu tên người dùng vào Firestore
-  });
-  _controller.clear();
-}
 
+  void _sendMessage() async {
+    FocusScope.of(context).unfocus();
+    final user = FirebaseAuth.instance.currentUser;
+    final username =
+        user!.displayName ?? 'Unknown'; // Lấy tên người dùng từ FirebaseAuth
+
+    await FirebaseFirestore.instance.collection('chat').add({
+      'text': _enteredMessage,
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+      'username': username, // Lưu tên người dùng vào Firestore
+    });
+    _controller.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         title: Column(
+        backgroundColor: Colors.blue,
+        title: Column(
           children: [
             const Text('Chat Firestore'),
             Text(
@@ -46,7 +46,6 @@ void _sendMessage() async {
             )
           ],
         ),
-
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -96,6 +95,7 @@ Future<void> _signOut(BuildContext context) async {
   //await FirebaseAuth.instance.signOut(); // Đăng xuất khỏi Firebase
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
+    MaterialPageRoute(
+        builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
   );
 }

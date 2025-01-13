@@ -26,19 +26,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Lấy thông tin người dùng từ Firestore
   Future<void> _getUserData() async {
     try {
-      final userRef = FirebaseFirestore.instance.collection('users').doc(_user.uid);
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(_user.uid);
       final userDoc = await userRef.get();
-      
+
       if (userDoc.exists) {
         setState(() {
           _username = userDoc['username'] ?? 'Anonymous';
           _email = userDoc['email'] ?? '';
-          
+
           // Kiểm tra nếu người dùng không đăng nhập qua Google và không có photoURL
           if (_user.photoURL != null && _user.photoURL!.isNotEmpty) {
             _photoURL = _user.photoURL!; // Nếu có ảnh từ Google, dùng ảnh đó
           } else {
-            _photoURL = 'assets/images/Default.jpg'; // Dùng ảnh mặc định nếu không có ảnh từ Google
+            _photoURL =
+                'assets/images/Dea.jpg'; // Dùng ảnh mặc định nếu không có ảnh từ Google
           }
         });
       }
@@ -54,7 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await FirebaseAuth.instance.signOut(); // Đăng xuất khỏi Firebase
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
+      MaterialPageRoute(
+          builder: (context) => AuthScreen()), // Quay lại màn hình AuthScreen
     );
   }
 
@@ -62,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Profile'),
         actions: [
           IconButton(
@@ -70,19 +74,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Center( // Dùng Center widget để căn giữa toàn bộ body
+      body: Center(
+        // Dùng Center widget để căn giữa toàn bộ body
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Căn giữa theo trục dọc
-            crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa theo trục ngang
+            mainAxisAlignment:
+                MainAxisAlignment.center, // Căn giữa theo trục dọc
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Căn giữa theo trục ngang
             children: [
               // Avatar
               CircleAvatar(
                 radius: 60,
-                backgroundImage: _photoURL.startsWith('http') 
-                  ? NetworkImage(_photoURL) // Nếu có URL hình ảnh, sử dụng NetworkImage
-                  : AssetImage(_photoURL) as ImageProvider, // Nếu không có ảnh URL, dùng ảnh mặc định
+                backgroundImage: _photoURL.startsWith('http')
+                    ? NetworkImage(
+                        _photoURL) // Nếu có URL hình ảnh, sử dụng NetworkImage
+                    : AssetImage(_photoURL)
+                        as ImageProvider, // Nếu không có ảnh URL, dùng ảnh mặc định
               ),
               SizedBox(height: 16),
               // Tên người dùng
@@ -109,4 +118,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
