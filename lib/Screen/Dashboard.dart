@@ -46,9 +46,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_screens[_selectedIndex].toString()),
-      ),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator()) // Hiển thị khi đang tải
