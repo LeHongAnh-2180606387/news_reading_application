@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Container(
-        color: Colors.grey[200],
+        color: const Color.fromARGB(255, 174, 191, 199),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
