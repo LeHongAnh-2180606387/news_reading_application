@@ -117,8 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (mounted) {
         setState(() {
-          weatherAnimation = getWeatherAnimation(
-              iconCode); // Gọi hàm để lấy đường dẫn file JSON cho animation
+          weatherAnimation = getWeatherAnimation(iconCode); // Gọi hàm để lấy đường dẫn file JSON cho animation
           isLoading = false;
         });
       }

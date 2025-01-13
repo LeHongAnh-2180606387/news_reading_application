@@ -24,7 +24,7 @@ dependencies:
   provider: ^6.1.2
 
    # Thời tiết
-  lottie: ^3.3.1
+  lottie: ^3.2.0
   geolocator: ^13.0.2
   # http: ^1.2.2
   geocoding: ^3.0.0
