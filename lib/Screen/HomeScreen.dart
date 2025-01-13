@@ -216,7 +216,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('News App'),
+        title: const Text(
+          'News App',
+          style: TextStyle(
+            fontFamily: 'Pacifico', // Sử dụng font Pacifico
+            fontSize: 24,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.bookmark),

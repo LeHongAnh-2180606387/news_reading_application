@@ -50,7 +50,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 33,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Pacifico'),
               ),
             ),
             SingleChildScrollView(

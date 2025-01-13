@@ -66,7 +66,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Profile'),
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            fontFamily: 'Pacifico', // Sử dụng font Pacifico
+            fontSize: 24,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
